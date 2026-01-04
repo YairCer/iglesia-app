@@ -35,3 +35,17 @@ class Event(db.Model):
 
     def __repr__(self):
         return f'<Event {self.title}>'
+
+class Member(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    phone = db.Column(db.String(20))
+    email = db.Column(db.String(120))
+    address = db.Column(db.String(200))
+    birthdate = db.Column(db.Date)
+    status = db.Column(db.String(20), default='Activo')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Member {self.first_name} {self.last_name}>'

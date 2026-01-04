@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header-section"
+    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <h1>Directorio de Miembros</h1>
+        <p style="color: var(--text-muted);">Gestiona la información de la congregación</p>
+    </div>
+    <a href="{{ url_for('main.new_member') }}" class="btn">
+        <span>+</span> Nuevo Miembro
+    </a>
+</div>
+
+<div class="card">
+    <div style="margin-bottom: 1.5rem;">
+        <input type="text" id="searchInput" placeholder="Buscar por nombre..." onkeyup="searchTable()"
+            style="max-width: 300px;">
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+            <thead>
+                <tr style="border-bottom: 2px solid #e5e7eb; text-align: left;">
+                    <th style="padding: 1rem; color: var(--text-muted); font-weight: 600;">Nombre</th>
+                    <th style="padding: 1rem; color: var(--text-muted); font-weight: 600;">Teléfono</th>
+                    <th style="padding: 1rem; color: var(--text-muted); font-weight: 600;">Email</th>
+                    <th style="padding: 1rem; color: var(--text-muted); font-weight: 600;">Estado</th>
+                    <th style="padding: 1rem; color: var(--text-muted); font-weight: 600;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="memberTable">
+                {% for member in members %}
+                <tr style="border-bottom: 1px solid #f3f4f6;">
+                    <td style="padding: 1rem; font-weight: 500;">{{ member.first_name }} {{ member.last_name }}</td>
+                    <td style="padding: 1rem;">{{ member.phone or '-' }}</td>
+                    <td style="padding: 1rem;">{{ member.email or '-' }}</td>
+                    <td style="padding: 1rem;">
+                        <span style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; 
+                            background-color: {{ '#dcfce7' if member.status == 'Activo' else '#f3f4f6' }}; 
+                            color: {{ '#166534' if member.status == 'Activo' else '#6b7280' }};">
+                            {{ member.status }}
+                        </span>
+                    </td>
+                    <td style="padding: 1rem;">
+                        <a href="{{ url_for('main.edit_member', id=member.id) }}"
+                            style="color: var(--primary-color); text-decoration: none; margin-right: 0.5rem;">Editar</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                        No hay miembros registrados aún.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function searchTable() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("memberTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0]; // Column 0 is Name
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db
-from app.models import User, Event
+from app.models import User, Event, Member
 from datetime import datetime
 import socket
 import qrcode
@@ -139,3 +139,64 @@ def create_event():
             flash('Error al crear el evento.', 'danger')
             
     return render_template('create_event.html')
+
+@bp.route('/members')
+@login_required
+def members():
+    members = Member.query.order_by(Member.last_name.asc()).all()
+    return render_template('members.html', members=members)
+
+@bp.route('/members/new', methods=['GET', 'POST'])
+@login_required
+def new_member():
+    if request.method == 'POST':
+        try:
+            member = Member(
+                first_name=request.form['first_name'],
+                last_name=request.form['last_name'],
+                phone=request.form['phone'],
+                email=request.form['email'],
+                address=request.form['address'],
+                status=request.form.get('status', 'Activo')
+            )
+            
+            if request.form['birthdate']:
+                member.birthdate = datetime.strptime(request.form['birthdate'], '%Y-%m-%d')
+                
+            db.session.add(member)
+            db.session.commit()
+            flash('Miembro registrado exitosamente.', 'success')
+            return redirect(url_for('main.members'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error al registrar miembro: {str(e)}', 'danger')
+            
+    return render_template('member_form.html', member=None)
+
+@bp.route('/members/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_member(id):
+    member = Member.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        try:
+            member.first_name = request.form['first_name']
+            member.last_name = request.form['last_name']
+            member.phone = request.form['phone']
+            member.email = request.form['email']
+            member.address = request.form['address']
+            member.status = request.form['status']
+            
+            if request.form['birthdate']:
+                member.birthdate = datetime.strptime(request.form['birthdate'], '%Y-%m-%d')
+            else:
+                member.birthdate = None
+                
+            db.session.commit()
+            flash('Información actualizada.', 'success')
+            return redirect(url_for('main.members'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error al actualizar: {str(e)}', 'danger')
+            
+    return render_template('member_form.html', member=member)
