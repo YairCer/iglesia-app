@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="card">
+        <h2 class="text-center" style="margin-bottom: 2rem;">Nuevo Evento</h2>
+
+        <form action="{{ url_for('main.create_event') }}" method="POST">
+            <div class="form-group">
+                <label for="title">Título del Evento</label>
+                <input type="text" id="title" name="title" placeholder="Ej: Culto de Jóvenes" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" name="description" rows="5" placeholder="Detalles del evento..."
+                    style="resize: vertical;"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Fecha y Hora</label>
+                <input type="datetime-local" id="date" name="date" required>
+            </div>
+
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary" style="margin-top: 0;">Cancelar</a>
+                <button type="submit" class="btn" style="flex: 2;">Publicar Evento</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

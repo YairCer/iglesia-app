@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 2rem auto; text-align: center; padding: 3rem;">
+    <h1 style="color: var(--primary-color); margin-bottom: 0.5rem;">Únete a la App</h1>
+    <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">
+        Escanea el código para conectarte desde tu celular.
+    </p>
+
+    <div style="background: white; padding: 10px; display: inline-block; border: 1px solid #ddd; border-radius: 8px;">
+        <img src="data:image/png;base64,{{ qr_code }}" alt="Código QR de Acceso" style="width: 250px; height: 250px;">
+    </div>
+
+    <div style="margin-top: 2rem; padding: 1rem; background: #eff6ff; border-radius: 8px; color: #1e40af;">
+        <strong>Conéctate al WiFi de la Iglesia</strong><br>
+        <span style="font-size: 0.9rem;">(Asegúrate de estar en la misma red)</span>
+    </div>
+
+    <p style="margin-top: 1.5rem; color: #6b7280; font-family: monospace;">{{ url }}</p>
+
+    <div style="margin-top: 2rem;">
+        <button onclick="window.print()" class="btn btn-secondary" style="width: auto;">🖨️ Imprimir Cartel</button>
+    </div>
+</div>
+
+<style>
+    @media print {
+
+        header,
+        footer,
+        .btn {
+            display: none !important;
+        }
+
+        body {
+            background: white;
+            padding: 0;
+            margin: 0;
+        }
+
+        .card {
+            box-shadow: none;
+            border: none;
+            margin: 0;
+            width: 100%;
+        }
+
+        .container {
+            margin: 0;
+        }
+    }
+</style>
+{% endblock %}

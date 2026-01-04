@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="welcome-header">
+    <h1>Próximos Eventos</h1>
+    <a href="{{ url_for('main.create_event') }}"
+        style="background: var(--primary-color); color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 4px; font-weight: 500;">+
+        Nuevo Evento</a>
+</div>
+
+<div style="display: grid; gap: 1rem;">
+    {% if events %}
+    {% for event in events %}
+    <div
+        style="background: white; padding: 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ event.title }}</h3>
+            <p style="color: #666; margin-bottom: 0.5rem;">{{ event.description }}</p>
+            <small style="color: #888;">📅 {{ event.date.strftime('%d/%m/%Y %H:%M') }}</small>
+        </div>
+        <!-- Future: Add Delete/Edit buttons -->
+    </div>
+    {% endfor %}
+    {% else %}
+    <p style="text-align: center; color: #666;">No hay eventos programados.</p>
+    {% endif %}
+</div>
+{% endblock %}
