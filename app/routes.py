@@ -22,9 +22,23 @@ def get_local_ip():
 
 @bp.route('/invite')
 def invite():
-    # Generate the URL
-    ip_address = get_local_ip()
-    url = f"http://{ip_address}:5000"
+    # Generate the URL dynamically
+    # Use PUBLIC_URL env var if available (useful for production override)
+    # Otherwise use the request's URL root which works with ProxyFix
+    import os
+    if os.environ.get('PUBLIC_URL'):
+        url = os.environ.get('PUBLIC_URL')
+    else:
+        # If running locally (no proxy usually), get_local_ip might still be useful
+        # but for Render, request.url_root with ProxyFix is best.
+        # We'll use a hybrid approach: if strictly local IP is needed for
+        # cross-device testing on LAN, we keep get_local_ip logic for debug mode.
+        from flask import current_app
+        if current_app.debug:
+             ip_address = get_local_ip()
+             url = f"http://{ip_address}:5000"
+        else:
+             url = url_for('main.index', _external=True)
     
     # Generate QR Code
     qr = qrcode.QRCode(
